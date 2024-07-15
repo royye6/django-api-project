@@ -1,6 +1,7 @@
 from django.db import models
 
 
+
 class Posts(models.Model):
     title = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
@@ -15,7 +16,7 @@ class Posts(models.Model):
 
 class Comments(models.Model):
     username = models.CharField(max_length=50)
-    post_title = models.ForeignKey(to_field=Posts.title)
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE)
     comment = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -24,10 +25,14 @@ class Comments(models.Model):
     
 
 class Categories(models.Model):
-    category = models.ForeignKey(to_field=Posts.category)
-    total_posts_per_category = models.AutoField()
+    category = models.CharField(max_length=20)
+    total_posts_per_category = models.IntegerField(default=0)
 
     def __str__(self) -> str:
         return f"{self.category}, {self.total_posts_per_category}"
+
+    def save(self, *args, **kwargs):
+        self.total_posts_per_category = Posts.objects.filter(category=self.category).count()
+        super().save(*args, **kwargs)
 
 
