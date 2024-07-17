@@ -22,4 +22,5 @@ urlpatterns = [
    path('', include('todos.urls')),
    path('', include('blog.urls')),
    path('', include('books.urls')),
+   path('', include('movies.urls')),
 ]
